@@ -1,3 +1,5 @@
+import { Building } from './building.js';
+
 export const HOLDING_WIDTH = 24;
 export const HOLDING_HEIGHT = 20;
 
@@ -105,5 +107,21 @@ export class Holding {
     this.name = name;
     this.map = new HoldingMap();
     this.buildings = [];
+  }
+
+  placeBuilding(type, x, y) {
+    const b = new Building(type, x, y);
+    this.buildings.push(b);
+    return b;
+  }
+
+  buildingAt(x, y) {
+    return this.buildings.find((b) => b.x === x && b.y === y) || null;
+  }
+
+  animalAt(x, y, index = 0) {
+    const b = this.buildingAt(x, y);
+    if (!b) return null;
+    return b.animals[index] || null;
   }
 }

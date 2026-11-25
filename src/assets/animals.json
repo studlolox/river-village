@@ -1,0 +1,30 @@
+{
+  "RiverHen": {
+    "kind": "RiverHen",
+    "housing": "coop",
+    "price": 400,
+    "product": "Egg",
+    "sellPrice": 50
+  },
+  "BrookDuck": {
+    "kind": "BrookDuck",
+    "housing": "coop",
+    "price": 600,
+    "product": "DuckEgg",
+    "sellPrice": 95
+  },
+  "MeadowCow": {
+    "kind": "MeadowCow",
+    "housing": "barn",
+    "price": 800,
+    "product": "Milk",
+    "sellPrice": 125
+  },
+  "CloudSheep": {
+    "kind": "CloudSheep",
+    "housing": "barn",
+    "price": 1000,
+    "product": "Wool",
+    "sellPrice": 170
+  }
+}
