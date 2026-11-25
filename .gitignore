@@ -3,5 +3,4 @@ node_modules/
 *.log
 dist/
 build/
-extracted-assets/
 .tmp_asset_ids.json
