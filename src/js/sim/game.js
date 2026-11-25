@@ -11,6 +11,9 @@ import { ShippingBin } from './shipping.js';
 import { ReedsMarket } from './shop.js';
 import { EnergySystem } from './energy.js';
 import { Onboarding } from './onboarding.js';
+import { WeatherSystem } from './weather.js';
+import { Crafting } from './crafting.js';
+import { VillageRestorationLedger } from './milestones.js';
 
 export const SEASONS = ['Spring', 'Summer', 'Fall', 'Winter'];
 export const DAYS_PER_SEASON = 28;
@@ -35,7 +38,10 @@ export class Game {
     this.shippingBin = new ShippingBin();
     this.market = new ReedsMarket();
     this.onboarding = new Onboarding();
-    this.world = new World(this.player, this.holding);
+    this.weather = new WeatherSystem('sunny');
+    this.crafting = new Crafting();
+    this.milestones = new VillageRestorationLedger();
+    this.world = new World(this.player, this.holding, 'Holding');
     this.timeOfDay = new TimeOfDay(START_MINUTES);
     this.date = { season: 'Spring', day: 1, year: 1 };
     this.settings = new Settings();
@@ -96,10 +102,13 @@ export class Game {
       const idx = SEASONS.indexOf(this.date.season);
       const nextIdx = (idx + 1) % SEASONS.length;
       this.date.season = SEASONS[nextIdx];
+      this.world.advanceSeason();
       if (nextIdx === 0) {
         this.date.year += 1;
       }
     }
+    this.weather.rollNext(this.date.season);
+    this.farm.weather = this.weather.current;
     this.player.energy = this.player.maxEnergy;
     this.player.hp = this.player.maxHp;
     this.timeOfDay.setMinutes(START_MINUTES);

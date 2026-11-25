@@ -1,0 +1,11 @@
+{
+  "id": "Mountains",
+  "name": "Hollow Hill & Deep Warrens Entrance",
+  "width": 25,
+  "height": 20,
+  "warps": [
+    { "x": 12, "y": 19, "targetRegion": "RiverVillage", "targetX": 12, "targetY": 1 },
+    { "x": 18, "y": 4, "targetRegion": "DeepWarrens", "targetX": 4, "targetY": 4 }
+  ],
+  "palette": { "ground": "#7d887d", "accent": "#5b6268" }
+}

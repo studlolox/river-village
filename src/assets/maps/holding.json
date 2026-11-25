@@ -1,0 +1,10 @@
+{
+  "id": "Holding",
+  "name": "Honeysuckle Holding",
+  "width": 25,
+  "height": 20,
+  "warps": [
+    { "x": 24, "y": 10, "targetRegion": "RiverVillage", "targetX": 1, "targetY": 10 }
+  ],
+  "palette": { "ground": "#5a9e56", "accent": "#b4885a" }
+}

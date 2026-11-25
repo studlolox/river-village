@@ -11,6 +11,7 @@ All names are original River Village IP — no reference-game names are used.
 | FV-002 | Responsive mobile-first UI | Every screen usable at 375px width; touch targets ≥44×44 CSS px; no hover-only interactions. |
 | FV-003 | Settings panel | Audio volume toggle, music toggle, screen shake toggle, language (original strings), credits. |
 | FV-004 | Save / load | LocalStorage-backed save slots (3), autosave on day-end and sleep, delete-save confirmation. |
+| FV-005 | Dev console & mode | Gated developer mode and mobile-friendly console/drawer to add gold/items, refill energy/HP, advance time/weather/seasons, boost villager friendship, advance storyline/milestones, and unlock achievements. |
 
 ## Character & holding
 

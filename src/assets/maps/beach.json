@@ -1,0 +1,10 @@
+{
+  "id": "Beach",
+  "name": "Sunlit Cove",
+  "width": 25,
+  "height": 20,
+  "warps": [
+    { "x": 12, "y": 0, "targetRegion": "RiverVillage", "targetX": 12, "targetY": 18 }
+  ],
+  "palette": { "ground": "#e2cf98", "accent": "#3f8fb8" }
+}

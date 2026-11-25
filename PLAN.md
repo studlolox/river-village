@@ -1,6 +1,6 @@
 # PLAN.md — River Village phased build plan
 
-Build order follows dependency, risk-retirement, and playable-value slices: **tooling, spec alignment & `sim/`/`render/` architecture → playable farming vertical slice + FTUE & economy → world, seasons, foraging & basic crafting → animals → Deep Warrens mining, combat & upgrades → fishing, advanced crafting & cooking → villagers & mail → original music/polish (v1.0) → marriage, festivals & arcade (v1.1 / full 57-feature completion)**.
+Build order follows dependency, risk-retirement, and playable-value slices: **tooling, spec alignment & `sim/`/`render/` architecture → playable farming vertical slice + FTUE & economy → world, seasons, foraging, basic crafting & dev console → animals → Deep Warrens mining, combat & upgrades → fishing, advanced crafting & cooking → villagers & mail → original music/polish (v1.0) → marriage, festivals & arcade (v1.1 / full 58-feature completion)**.
 
 Each phase ends only when:
 1. Every `SPEC` test assigned to that phase passes (Vitest for pure `sim/`, Playwright Chromium for layout/PWA/E2E).
@@ -35,7 +35,7 @@ Before Phase 0 code is written, every phase adheres to these foundations:
    - **Versioned compact saves (`schemaVersion`):** `SaveManager` stores compact RLE/sparse tile diffs with `schemaVersion`, migration hooks, and non-blocking confirmation state (`confirmDelete`) safely under mobile `localStorage` limits (~5 MB cap, explicitly size-tested).
 5. **Dual Test Harness & Cross-System Integration Suite:**
    - Vitest runs pure headless `sim/` `SPEC-FV-*` tests; Playwright Chromium runs DOM/layout/PWA specs (`FV-001`, `FV-002`) and mobile `375×812` + `812×375` smoke flows.
-   - A separate integration suite (`src/tests/integration/`, alongside the 57 `SPEC-FV-###.test.js` files) verifies multi-system flows (save/load migrations, season rollovers, clinic wake-up, shipping payouts) and runs a headless 1-year economy simulator.
+   - A separate integration suite (`src/tests/integration/`, alongside the 58 `SPEC-FV-###.test.js` files) verifies multi-system flows (save/load migrations, season rollovers, clinic wake-up, shipping payouts) and runs a headless 1-year economy simulator.
 
 ---
 
@@ -106,11 +106,12 @@ Deliverables:
 
 ---
 
-## Phase 2 — World, regions, seasons, foraging & basic crafting (weeks 6–7)
+## Phase 2 — World, regions, seasons, foraging, basic crafting & dev console (weeks 6–7)
 
-Goal: expand beyond the holding across River Village, beach, forest, mountains, and Deep Warrens entrance; seasonal weather & palette shifts; foraging/debris clearing; early Village Restoration milestone hooks; and **Basic Crafting** (pulled forward so players get chests, fences, and basic sprinklers before Phase 3–4).
+Goal: expand beyond the holding across River Village, beach, forest, mountains, and Deep Warrens entrance; seasonal weather & palette shifts; foraging/debris clearing; early Village Restoration milestone hooks; **Basic Crafting** (pulled forward so players get chests, fences, and basic sprinklers before Phase 3–4); and a **full Dev Console & Developer Mode (`FV-005`)** so devs can test every system rapidly on both desktop and mobile touch viewports.
 
 Features:
+- FV-005 Dev console & mode (gated via `?dev=1`, `localStorage` flag, 5-tap Settings version gesture, or `~` / `Ctrl+Shift+D`) → SPEC-FV-005
 - FV-021 Region travel → SPEC-FV-021
 - FV-023 Seasons & weather (rain auto-watering, storm/sunny states, seasonal visuals) → SPEC-FV-023
 - FV-070 Forageables → SPEC-FV-070
@@ -121,13 +122,19 @@ Features:
 World & Progression Additions:
 - **Village Restoration Ledger hooks:** Milestone delivery board in River Village linking regional materials/produce to landmark repairs (shortcuts/unlocks), giving mid-term direction.
 - **Workplace NPC presence stubs:** Place non-scheduled shopkeeper avatars (Blacksmith, Clinic Doctor, Saloon Keeper) in their buildings so town feels inhabited prior to Phase 6 schedules.
+- **Full Dev Console & Mode (`src/js/sim/dev.js` + `src/js/ui/dev-console.js`):**
+  - **Economy & Items:** `addGold(amount)`, `setGold(amount)`, `giveItem(itemId, qty, quality)`, `clearInventory()`, `fillEnergy()`, `godMode(bool)` (infinite energy/HP).
+  - **Time, Weather & World:** `setTime(hh, mm)`, `advanceDays(n)`, `setSeason(season)`, `setWeather(weather)`, `teleport(region, x, y)`, `growAllCrops()`, `waterAllCrops()`, `clearDebris()`.
+  - **Storyline, Relationships & Achievements:** `completeOnboarding()`, `advanceStoryline(milestoneId)` / `unlockAllMilestones()`, `setFriendship(villagerId, hearts)` / `maxAllFriendships()`, `unlockAchievement(id)` / `unlockAllAchievements()`, `resetAchievements()`.
+  - **QA & State Tools:** `inspectState(path)`, `exportSaveJson()`, `importSaveJson()`, `fpsOverlay(bool)` — exposed via both a CLI-style command bar with autocomplete and a touch-friendly `375×812` tabbed quick-action drawer (≥44×44 CSS px targets).
 
-Milestone M2: player travels seamlessly across Holding, River Village, Beach, Forest, Mountains, and Deep Warrens entrance; chops trees, breaks stones, gathers seasonal forage, sees rain water crops and seasons shift palettes, and crafts chests/fences/basic sprinklers.
+Milestone M2: player travels seamlessly across Holding, River Village, Beach, Forest, Mountains, and Deep Warrens entrance; chops trees, breaks stones, gathers seasonal forage, sees rain water crops and seasons shift palettes, and crafts chests/fences/basic sprinklers; developers can toggle Dev Mode to spawn items, add gold, skip days/seasons, advance storyline/achievements, and inspect state in seconds.
 
 Deliverables:
-- `src/js/sim/`: `region.js`, `weather.js`, `forage.js`, `season.js`, `debris.js`, `crafting.js` (Part 1), `milestones.js`
+- `src/js/sim/`: `region.js`, `weather.js`, `forage.js`, `season.js`, `debris.js`, `crafting.js` (Part 1), `milestones.js`, `dev.js`, `achievements.js`
+- `src/js/ui/`: `dev-console.js` (mobile-first tabbed drawer + command input)
 - Original region tilemaps in `src/assets/maps/` (Holding, River Village, Beach, Forest, Mountains)
-- All Phase 2 SPEC tests + season-rollover integration test passing
+- All Phase 2 SPEC tests (`FV-005` included) + season-rollover integration test passing
 
 ---
 
@@ -145,6 +152,7 @@ Features:
 UX & Balance Additions:
 - **Touch-friendly animal care:** Tap animal to pet/collect in one gesture + shared hay trough autofill, accompanied by synthesized animal chirps/moos and heart particles.
 - **Economy ROI check:** Update `economy.json` simulator so barn/coop payback period fits cleanly alongside Phase 2 crops/sprinklers.
+- **Dev Console hooks:** Register `spawnAnimal(type, name)` and `maxAnimalHappiness()` in `dev.js`.
 
 Milestone M3: player places a barn/coop on holding plots, buys original animals at Reed's Market, names them, feeds hay/pets smoothly on touch, and collects quality-scaled eggs, wool, and milk.
 
@@ -174,6 +182,7 @@ Features:
 
 Combat Feel & Mobile Ergonomics Additions:
 - **Survival & Juice Mechanics:** Invulnerability frames (i-frames + blink) after contact damage so overlapping monsters don't drain HP per frame; knockback vectors; short hitstop frames; input buffering; and optional **slingshot auto-aim lock-on** for touch controls.
+- **Dev Console hooks:** Register `mineFloor(n)`, `clearMineFloor()`, `crackAllGeodes()`, and `setToolTier(tool, tier)` in `dev.js`.
 
 Milestone M4: player enters the Deep Warrens, mines copper/iron/gold, fights 6 original monster types with responsive sword/slingshot touch controls, collects loot/geodes, descends via ladders & 5-floor checkpoints, wakes at the Clinic at 0 HP, cracks geodes, and upgrades tools at the Blacksmith (unlocking 3×3 tilling/watering).
 
@@ -195,6 +204,7 @@ Features:
 - FV-081 Crafting menu (Part 2: full artisan & automation recipes—`Kegs`, `Preserves Jars`, `Quality Sprinklers`) → SPEC-FV-081
 - FV-082 Cooking → SPEC-FV-082
 - FV-085 expansion: purchasable inventory row/bag upgrades at Reed's Market as a mid-game gold sink.
+- Dev Console hooks: register `setSkillLevel('fishing', n)` and `unlockAllRecipes()` in `dev.js`.
 
 Milestone M5: player fishes at river/beach/mountain lake via an original touch-friendly timing minigame, levels fishing for better rods, crafts kegs/preserves jars/quality sprinklers using Deep Warrens ores, unlocks backpack rows, and cooks dishes that restore energy/HP.
 
@@ -215,6 +225,7 @@ Features:
 - FV-092 Friendship (0–10 hearts) → SPEC-FV-092
 - FV-093 Gifts (love/like/neutral/dislike reaction tables) → SPEC-FV-093
 - FV-102 Mail system (letters, gifts, invitations, Village Restoration updates at holding mailbox) → SPEC-FV-102
+- Dev Console hooks: wire `setFriendship`, `maxAllFriendships`, and `sendMail(mailId)` directly to full villager/mail state in `dev.js`.
 
 Milestone M6 (**v1.0 Feature-Complete Candidate**): 10 original villagers follow daily schedules across River Village, respond with dynamic dialogue and gift reactions, build friendship hearts, and send mail/rewards to the holding.
 
@@ -261,13 +272,13 @@ Deliverables:
 - FV-112 Arcade at the saloon → SPEC-FV-112
 - Deliverables: `src/js/sim/festival.js`, `src/js/sim/festival-games.js`, `src/js/sim/arcade.js`, `src/assets/festivals.json`
 
-Milestone M8 (**Full 57-Feature Completion**): marriage, birthdays/heart events, 4 seasonal festivals, and the saloon arcade cabinet playable and verified end-to-end.
+Milestone M8 (**Full 58-Feature Completion**): marriage, birthdays/heart events, 4 seasonal festivals, and the saloon arcade cabinet playable and verified end-to-end (including Dev Console hooks for `triggerEvent`, `startFestival`, `setSpouse`, and `addArcadeTokens`).
 
 ---
 
 ## Release checklist — Full River Village
 
-- All **57** `SPEC` tests (`FV-001` through `FV-132`) pass in `src/tests/<feature-id>.test.js`
+- All **58** `SPEC` tests (`FV-001` through `FV-132`, including `FV-005`) pass in `src/tests/<feature-id>.test.js`
 - Cross-phase integration, save-migration, and 1-year economy simulation checks pass
 - Mobile-first verified on `375×812` portrait and `812×375` landscape touch viewports (≥44×44 CSS px targets, no hover-only interactions, iOS A2HS fallback, `visibilitychange` auto-pause)
 - PWA installs and runs 100% offline within precache budget (≤ 30 MB) and `<50` draw calls per scene

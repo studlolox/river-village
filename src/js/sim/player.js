@@ -25,7 +25,7 @@ export class Character {
 }
 
 /**
- * Player entity state: grid position, stats, equipped tool, and movement.
+ * Player entity state: grid position, stats, tools, movement, and world/farm actions.
  */
 export class Player {
   constructor(opts = {}) {
@@ -46,6 +46,17 @@ export class Player {
     this.maxHp = opts.maxHp ?? 100;
     this.hp = opts.hp ?? this.maxHp;
     this.equippedTool = opts.tool || 'hoe';
+    this.tools = {
+      hoe: { tier: opts.upgraded && this.equippedTool === 'hoe' ? 2 : 1 },
+      wateringCan: { tier: opts.upgraded && this.equippedTool === 'wateringCan' ? 2 : 1 },
+      axe: { tier: 1 },
+      pickaxe: { tier: 1 },
+      scythe: { tier: 1 }
+    };
+  }
+
+  tool(name) {
+    return this.tools[name] || null;
   }
 
   handleInput(direction, canWalkFn = null) {
@@ -59,5 +70,45 @@ export class Player {
     }
     this.gridPos = { x: nx, y: ny };
     return true;
+  }
+
+  interactAt(world, x, y, inv) {
+    if (world?.forage) {
+      return world.forage.pick(x, y, inv);
+    }
+    return null;
+  }
+
+  useToolAt(target, x, y, toolOrInv = null, maybeInv = null) {
+    const toolName = typeof toolOrInv === 'string' ? toolOrInv : this.equippedTool;
+    const inv = typeof toolOrInv === 'string' ? maybeInv : toolOrInv;
+
+    // World debris (axe / pickaxe)
+    if (target?.debris) {
+      if (toolName === 'axe') return target.debris.chopTree(x, y, inv);
+      if (toolName === 'pickaxe') return target.debris.breakStone(x, y, inv);
+    }
+
+    // Mine nodes (Phase 4 hook)
+    if (target?.mineNodeAt || target?.hitNode) {
+      return target.hitNode(x, y, inv);
+    }
+
+    // Farm tiles (hoe / wateringCan, including 3x3 upgraded tier >= 2)
+    if (target?.useTool) {
+      const tier = this.tools[toolName]?.tier ?? 1;
+      if (tier >= 2) {
+        let any = false;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (target.useTool(x + dx, y + dy, toolName)) any = true;
+          }
+        }
+        return any;
+      }
+      return target.useTool(x, y, toolName);
+    }
+
+    return false;
   }
 }

@@ -1,0 +1,10 @@
+{
+  "id": "Forest",
+  "name": "Mossbrook Woods",
+  "width": 25,
+  "height": 20,
+  "warps": [
+    { "x": 0, "y": 6, "targetRegion": "RiverVillage", "targetX": 23, "targetY": 6 }
+  ],
+  "palette": { "ground": "#3f7d45", "accent": "#2d5932" }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "RiverVillage",
+  "name": "River Village",
+  "width": 25,
+  "height": 20,
+  "warps": [
+    { "x": 0, "y": 10, "targetRegion": "Holding", "targetX": 23, "targetY": 10 },
+    { "x": 24, "y": 6, "targetRegion": "Forest", "targetX": 1, "targetY": 6 },
+    { "x": 12, "y": 19, "targetRegion": "Beach", "targetX": 12, "targetY": 1 },
+    { "x": 12, "y": 0, "targetRegion": "Mountains", "targetX": 12, "targetY": 18 }
+  ],
+  "npcs": [
+    { "name": "Maren Reed", "role": "Shopkeeper", "building": "Reed's Market", "x": 8, "y": 6 },
+    { "name": "Bramwell Thorne", "role": "Blacksmith", "building": "Blacksmith", "x": 16, "y": 6 },
+    { "name": "Clara Vance", "role": "Clinic Doctor", "building": "Clinic", "x": 10, "y": 12 },
+    { "name": "Dorian Flint", "role": "Saloon Keeper", "building": "Saloon", "x": 15, "y": 12 }
+  ],
+  "palette": { "ground": "#68a863", "accent": "#d2be96" }
+}
