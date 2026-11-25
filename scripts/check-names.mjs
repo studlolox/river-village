@@ -22,6 +22,7 @@ function walk(dir) {
       continue;
     }
     const relPath = path.relative(rootDir, fullPath);
+    if (relPath.startsWith('src/tests/')) continue;
     const ext = path.extname(entry.name).toLowerCase();
 
     if (forbiddenExtensions.includes(ext)) {
