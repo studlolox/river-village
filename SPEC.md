@@ -1,7 +1,7 @@
 # SPEC.md — River Village acceptance specification
 
 One acceptance test per feature. Test ids match the feature ids from `features.md` (SPEC-FV-### ≡ FV-###).
-Test files live at `src/tests/<feature-id>.test.js` and are run with a browser DOM harness (e.g., Jest + jsdom) or headless browser.
+Test files live at `src/tests/<feature-id>.test.js` and are run with Vitest (pure `sim/` tests) or Playwright Chromium (`FV-001`, `FV-002` real browser layout, service worker, and PWA tests).
 
 Conventions:
 - `given/when/then` describe the acceptance criteria.
@@ -221,6 +221,7 @@ test('FV-031 planting consumes seed and shows seed stage', () => {
   const f = new Farm();
   const inv = new Inventory();
   inv.add('springRootSeed', 1);
+  f.useTool(2, 2, 'hoe');
   f.plant(2, 2, 'springRootSeed', inv);
   expect(f.tileAt(2, 2).crop.stage).toBe('seed');
   expect(inv.count('springRootSeed')).toBe(0);
@@ -235,10 +236,13 @@ Then the tile is marked watered; unwatered crops do not grow that day
 ```js
 test('FV-032 watering marks tile watered; unwatered does not grow', () => {
   const f = new Farm();
-  f.plant(2, 2, 'springRootSeed', new Inventory());
+  f.useTool(2, 2, 'hoe');
+  f.plant(2, 2, 'springRootSeed', new Inventory({ springRootSeed: 1 }));
   f.water(2, 2);
   expect(f.tileAt(2, 2).watered).toBe(true);
-  const f2 = new Farm(); f2.plant(3, 3, 'springRootSeed', new Inventory());
+  const f2 = new Farm();
+  f2.useTool(3, 3, 'hoe');
+  f2.plant(3, 3, 'springRootSeed', new Inventory({ springRootSeed: 1 }));
   f2.advanceDay(); // no watering
   expect(f2.tileAt(3, 3).crop.stage).toBe('seed');
 });
@@ -252,9 +256,12 @@ Then the crop advances through seed → sprout → young → mature over season-
 ```js
 test('FV-033 crop advances growth stages per watered day', () => {
   const f = new Farm();
-  f.plant(2, 2, 'springRootSeed', new Inventory());
-  f.water(2, 2);
-  for (let i = 0; i < 3; i++) f.advanceDay();
+  f.useTool(2, 2, 'hoe');
+  f.plant(2, 2, 'springRootSeed', new Inventory({ springRootSeed: 1 }));
+  for (let i = 0; i < 3; i++) {
+    f.water(2, 2);
+    f.advanceDay();
+  }
   expect(f.tileAt(2, 2).crop.stage).toBe('mature');
 });
 ```
@@ -267,10 +274,13 @@ Then the crop is removed and the produce enters the inventory; regrow crops stay
 ```js
 test('FV-034 harvesting puts produce in inventory', () => {
   const f = new Farm();
-  const inv = new Inventory();
+  const inv = new Inventory({ springRootSeed: 1 });
+  f.useTool(2, 2, 'hoe');
   f.plant(2, 2, 'springRootSeed', inv);
-  f.water(2, 2);
-  for (let i = 0; i < 3; i++) f.advanceDay();
+  for (let i = 0; i < 3; i++) {
+    f.water(2, 2);
+    f.advanceDay();
+  }
   f.harvest(2, 2, inv);
   expect(f.tileAt(2, 2).crop).toBeNull();
   expect(inv.count('springRoot')).toBeGreaterThan(0);
@@ -311,7 +321,7 @@ test('FV-040 barn and coop house animals', () => {
 });
 ```
 
-### SPEC-FV-041 · Purchasing animals (FV-040)
+### SPEC-FV-041 · Purchasing animals (FV-041)
 Given gold and an empty barn/coop slot
 When the player buys an animal at Reed's Market
 Then gold is deducted and the animal appears in the building
@@ -337,7 +347,8 @@ test('FV-042 cared-for animal produces a product', () => {
   const a = new Animal('RiverHen');
   a.feed(); a.pet();
   const product = a.collectProduct();
-  expect(product).toBe('Egg');
+  expect(product.kind).toBe('Egg');
+  expect(product.quality).toBeDefined();
 });
 ```
 
@@ -579,6 +590,9 @@ test('FV-080 tool upgrade improves the tool', () => {
   const b = new Blacksmith();
   const p = new Player({ gold: 500, inventory: { CopperOre: 5 } });
   b.upgradeTool(p, 'wateringCan');
+  expect(p.tool('wateringCan').tier).toBe(1);
+  b.advanceDay(p);
+  b.advanceDay(p);
   expect(p.tool('wateringCan').tier).toBe(2);
 });
 ```

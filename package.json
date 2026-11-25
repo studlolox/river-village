@@ -1,0 +1,24 @@
+{
+  "name": "river-village",
+  "version": "1.0.0",
+  "description": "River Village — original 2.5D three.js farm-life PWA",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/check-budget.mjs",
+    "preview": "vite preview --port 4173 --strictPort",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "lint:ip": "node scripts/lint-ip.mjs",
+    "check": "npm run lint:ip && npm test && npm run build && npm run test:e2e"
+  },
+  "dependencies": {
+    "three": "^0.181.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.0.14"
+  }
+}

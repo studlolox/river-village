@@ -1,0 +1,16 @@
+{
+  "tools": {
+    "hoe": { "name": "Hoe", "category": "tool", "maxTier": 4 },
+    "wateringCan": { "name": "Watering Can", "category": "tool", "maxTier": 4 },
+    "axe": { "name": "Axe", "category": "tool", "maxTier": 4 },
+    "pickaxe": { "name": "Pickaxe", "category": "tool", "maxTier": 4 },
+    "scythe": { "name": "Scythe", "category": "tool", "maxTier": 1 },
+    "sword": { "name": "River Blade", "category": "weapon", "maxTier": 4 }
+  },
+  "items": {
+    "springRootSeed": { "name": "Spring Root Seeds", "category": "seed", "buyPrice": 20, "sellPrice": 10 },
+    "springRoot": { "name": "Spring Root", "category": "crop", "sellPrice": 80, "energyRestore": 20, "hpRestore": 10 },
+    "Wood": { "name": "Wood", "category": "material", "sellPrice": 2 },
+    "Stone": { "name": "Stone", "category": "material", "sellPrice": 2 }
+  }
+}

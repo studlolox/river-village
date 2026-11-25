@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#2d5a3f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>River Village</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <canvas id="game-canvas" aria-label="River Village 3D World"></canvas>
+
+  <header class="hud-top">
+    <div class="hud-card" id="hud-stats">
+      <span id="hud-date">Spring 1, Year 1</span>
+      <span id="hud-time">6:00 AM</span>
+      <span id="hud-gold">500g</span>
+      <span id="hud-energy">E: 100/100</span>
+    </div>
+    <div class="hud-actions">
+      <button id="btn-install" class="touch-btn primary" hidden>Install</button>
+      <button id="btn-sleep" class="touch-btn">Sleep</button>
+      <button id="btn-saves" class="touch-btn">Saves</button>
+      <button id="btn-settings" class="touch-btn">Settings</button>
+    </div>
+  </header>
+
+  <footer class="hud-bottom">
+    <div class="thumbstick-zone" id="thumbstick" aria-label="Movement thumbstick">
+      <div class="thumbstick-knob"></div>
+    </div>
+    <div class="right-controls">
+      <div class="quick-bar" id="quick-bar">
+        <button class="touch-btn quick-slot active" data-tool="hoe">Hoe</button>
+        <button class="touch-btn quick-slot" data-tool="wateringCan">Can</button>
+        <button class="touch-btn quick-slot" data-tool="axe">Axe</button>
+        <button class="touch-btn quick-slot" data-tool="pickaxe">Pick</button>
+      </div>
+      <button id="btn-action" class="touch-btn primary action-btn">Act</button>
+    </div>
+  </footer>
+
+  <!-- Character Creation Modal -->
+  <div id="modal-char" class="modal-backdrop">
+    <div class="modal-panel">
+      <h2>Welcome to River Village</h2>
+      <div class="field-row">
+        <label for="input-player-name">Character Name</label>
+        <input id="input-player-name" type="text" value="Aria" maxlength="24" />
+      </div>
+      <div class="field-row">
+        <label for="input-holding-name">Holding Name</label>
+        <input id="input-holding-name" type="text" value="Honeysuckle Holding" maxlength="32" />
+      </div>
+      <div class="field-row">
+        <label for="select-shirt-color">Shirt Color</label>
+        <select id="select-shirt-color">
+          <option value="#3b7a57">Meadow Green</option>
+          <option value="#476c9b">River Blue</option>
+          <option value="#b85d43">Autumn Terracotta</option>
+          <option value="#c99b3b">Sunburst Gold</option>
+        </select>
+      </div>
+      <button id="btn-start-game" class="touch-btn primary">Start Holding</button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="modal-settings" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <h2>Settings</h2>
+      <div class="setting-row">
+        <span>Music</span>
+        <button id="toggle-music" class="touch-btn">On</button>
+      </div>
+      <div class="setting-row">
+        <span>Sound Effects</span>
+        <button id="toggle-sfx" class="touch-btn">On</button>
+      </div>
+      <div class="setting-row">
+        <span>Screen Shake</span>
+        <button id="toggle-shake" class="touch-btn">On</button>
+      </div>
+      <div class="setting-row">
+        <span>Graphics Mode</span>
+        <button id="toggle-quality" class="touch-btn">High</button>
+      </div>
+      <div class="field-row">
+        <label for="select-day-length">Day Length (Mobile)</label>
+        <select id="select-day-length">
+          <option value="300">Fast (5 min)</option>
+          <option value="600" selected>Standard (10 min)</option>
+          <option value="900">Relaxed (15 min)</option>
+        </select>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin:0;">
+        River Village — Original 2.5D farm-life PWA. Procedural 3D & Web Audio.
+      </p>
+      <button id="btn-close-settings" class="touch-btn primary">Close</button>
+    </div>
+  </div>
+
+  <!-- Save / Load Modal -->
+  <div id="modal-saves" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <h2>Save & Load</h2>
+      <div id="save-slots-list"></div>
+      <button id="btn-close-saves" class="touch-btn primary">Close</button>
+    </div>
+  </div>
+
+  <!-- iOS Safari A2HS Fallback -->
+  <div id="ios-a2hs" class="ios-a2hs hidden">
+    <span>Tip: Tap Share then "Add to Home Screen" to play offline.</span>
+    <button id="btn-dismiss-ios" class="touch-btn">OK</button>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
