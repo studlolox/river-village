@@ -10,6 +10,7 @@ export const EnergySystem = {
   },
 
   consume(player, amount) {
+    if (player.godMode) return true;
     if (player.energy < amount) return false;
     player.energy = Math.max(0, player.energy - amount);
     return true;

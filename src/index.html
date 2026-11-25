@@ -28,6 +28,7 @@
       <button id="btn-sleep" class="touch-btn">Sleep</button>
       <button id="btn-saves" class="touch-btn">Saves</button>
       <button id="btn-settings" class="touch-btn">Settings</button>
+      <button id="btn-dev" class="touch-btn" hidden>Dev</button>
     </div>
   </header>
 
@@ -107,7 +108,7 @@
           <option value="900">Relaxed (15 min)</option>
         </select>
       </div>
-      <p style="font-size:12px;color:var(--muted);margin:0;">
+      <p id="settings-version" style="font-size:12px;color:var(--muted);margin:0;">
         River Village — Original 2.5D farm-life PWA. Procedural 3D & Web Audio.
       </p>
       <button id="btn-close-settings" class="touch-btn primary">Close</button>
@@ -142,6 +143,21 @@
       <h2>Reed's Market (Maren Reed)</h2>
       <div id="market-stock-list"></div>
       <button id="btn-close-market" class="touch-btn primary">Close</button>
+    </div>
+  </div>
+
+  <!-- Developer Console Modal (FV-005) -->
+  <div id="modal-dev" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <h2>Developer Console</h2>
+      <div id="dev-tabs" class="dev-tabs"></div>
+      <div id="dev-quick-actions" class="dev-quick-actions"></div>
+      <div class="dev-cmd-row">
+        <input id="dev-cmd-input" type="text" placeholder="e.g. addGold 500, giveItem springRoot 5" />
+        <button id="btn-dev-run" class="touch-btn primary">Run</button>
+      </div>
+      <pre id="dev-log" class="dev-log"></pre>
+      <button id="btn-close-dev" class="touch-btn">Close</button>
     </div>
   </div>
 

@@ -3,6 +3,8 @@ import { GameScene } from './js/render/scene.js';
 import { AudioEngine } from './js/render/audio.js';
 import { InputController } from './js/render/input.js';
 import { HudController } from './js/ui/hud.js';
+import { DevConsole } from './js/sim/dev.js';
+import { DevConsoleUI } from './js/ui/dev-console.js';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -17,6 +19,8 @@ const game = new Game();
 const audio = new AudioEngine(game.settings);
 const scene = new GameScene(canvas, game);
 const hud = new HudController(game, scene, audio);
+const dev = new DevConsole(game);
+const devUi = new DevConsoleUI(game, dev, scene, hud, audio);
 
 function performTileAction(tx, ty) {
   const res = game.interactTile(tx, ty);
@@ -133,4 +137,4 @@ function frame(now) {
 
 requestAnimationFrame(frame);
 
-window.__riverVillage = { game, scene, hud };
+window.__riverVillage = { game, scene, hud, dev, devUi };

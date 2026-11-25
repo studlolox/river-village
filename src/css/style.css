@@ -275,3 +275,41 @@ html, body {
     min-height: 52px;
   }
 }
+
+.dev-tabs, .dev-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dev-cmd-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dev-cmd-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  background: #102016;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.dev-log {
+  margin: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: #0b1610;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #a7d7b8;
+  font-size: 12px;
+  max-height: 120px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

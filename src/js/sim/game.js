@@ -14,6 +14,8 @@ import { Onboarding } from './onboarding.js';
 import { WeatherSystem } from './weather.js';
 import { Crafting } from './crafting.js';
 import { VillageRestorationLedger } from './milestones.js';
+import { AchievementManager } from './achievements.js';
+import namesData from '../../assets/names.json' with { type: 'json' };
 
 export const SEASONS = ['Spring', 'Summer', 'Fall', 'Winter'];
 export const DAYS_PER_SEASON = 28;
@@ -41,6 +43,43 @@ export class Game {
     this.weather = new WeatherSystem('sunny');
     this.crafting = new Crafting();
     this.milestones = new VillageRestorationLedger();
+    this.achievements = new AchievementManager();
+    this.animals = [];
+    this._friendships = new Map();
+    this._storylineFlags = new Set();
+    this.economy = {
+      get gold() { return playerGoldRef(); },
+      set gold(v) { setPlayerGoldRef(v); }
+    };
+    const playerGoldRef = () => this.player.gold;
+    const setPlayerGoldRef = (v) => { this.player.gold = Math.max(0, Number(v) || 0); };
+    this.npcs = {
+      getHearts: (id) => this._friendships.get(id) ?? 0,
+      setHearts: (id, hearts) => {
+        const clamped = Math.max(0, Math.min(10, Number(hearts) || 0));
+        this._friendships.set(id, clamped);
+        return clamped;
+      },
+      maxAll: () => {
+        for (const name of namesData.villagers || []) {
+          const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+          this._friendships.set(slug, 10);
+        }
+      }
+    };
+    this.quests = {
+      complete: (id) => {
+        this._storylineFlags.add(id);
+        const m = this.milestones.milestones.find((item) => item.id === id);
+        if (m) m.completed = true;
+        return true;
+      },
+      isCompleted: (id) => {
+        if (this._storylineFlags.has(id)) return true;
+        const m = this.milestones.milestones.find((item) => item.id === id);
+        return Boolean(m?.completed);
+      }
+    };
     this.world = new World(this.player, this.holding, 'Holding');
     this.timeOfDay = new TimeOfDay(START_MINUTES);
     this.date = { season: 'Spring', day: 1, year: 1 };
@@ -198,7 +237,10 @@ export class Game {
       date: { ...this.date },
       time: this.time,
       inventory: this.inventory.entries(),
-      tiles: this.holding.map.tiles
+      tiles: this.holding.map.tiles,
+      achievements: this.achievements.toJSON(),
+      friendships: Array.from(this._friendships.entries()),
+      storylineFlags: Array.from(this._storylineFlags)
     };
   }
 
@@ -220,6 +262,15 @@ export class Game {
       for (const item of data.inventory) {
         this.inventory.add(item.id, item.qty);
       }
+    }
+    if (Array.isArray(data.achievements)) {
+      this.achievements.fromJSON(data.achievements);
+    }
+    if (Array.isArray(data.friendships)) {
+      this._friendships = new Map(data.friendships);
+    }
+    if (Array.isArray(data.storylineFlags)) {
+      this._storylineFlags = new Set(data.storylineFlags);
     }
     this.started = true;
     return true;
