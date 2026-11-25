@@ -1,9 +1,0 @@
-{
-  "region": "Beach",
-  "width": 24,
-  "height": 18,
-  "landmarks": ["Tide Pier"],
-  "warps": [
-    { "x": 12, "y": 0, "toRegion": "Holding", "toX": 12, "toY": 16 }
-  ]
-}

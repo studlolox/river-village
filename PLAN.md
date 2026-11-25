@@ -1,39 +1,10 @@
 # PLAN.md — River Village phased build plan
 
-Build order follows dependency and playable-value slices: **tooling & sim/render architecture → playable farming vertical slice → world & animals → mining, combat & upgrades → fishing, crafting & cooking → villagers → audio/polish (v1.0) → festivals, marriage & arcade (v1.1 / full 57-feature completion)**.
+Build order follows dependency: shell → core loop (movement, time, farm) → content (animals, mine, fish, crafting, villagers, festivals) → polish (audio, particles, save). Each phase ends when every SPEC test for its features passes.
 
-Each phase ends only when:
-1. Every `SPEC` test assigned to that phase passes headlessly.
-2. The build runs offline in a mobile viewport (`375×812` touch) without console errors.
-3. The automated IP/naming check passes against `src/assets/names.json`.
+## Phase 0 — Foundation (weeks 1–2)
 
----
-
-## Cross-cutting architecture & production rules
-
-Before Phase 0 code is written, every phase adheres to these foundations:
-
-1. **Simulation vs. Renderer split:**
-   - `src/js/sim/` holds pure deterministic game state (`Game`, `Holding`, `Farm`, `Mine`, `Villager`, `TimeOfDay`, `Inventory`, `SaveManager`) with zero `three` or DOM imports so all 57 `SPEC` tests run fast and headlessly.
-   - `src/js/render/` holds the three.js isometric scene, camera, `THREE.InstancedMesh` / chunked tile geometry, texture atlases, particles, and touch/keyboard input adapters.
-   - `src/js/ui/` holds mobile-first HUD, modals, and ≥44×44 CSS px touch controls.
-2. **Offline-first bundling & cache budget:**
-   - Local `package.json` with a bundler (e.g., Vite) bundling `three` locally (zero CDN dependencies) and generating the precache list for `sw.js`.
-   - Total PWA precache budget: **≤ 30 MB** (WebP/PNG atlases, OGG/MP3 audio) so mobile browsers do not evict offline assets.
-3. **Asset conversion & IP compliance pipeline:**
-   - Scripts convert `extracted-assets/` (XNB/.xwb/.xsb) into web formats under `src/assets/` using original filenames only.
-   - Canonical registries live in `src/assets/names.json`, `src/assets/items.json`, and `src/assets/ATTRIBUTION.md`.
-   - A test/lint script scans `src/` and `src/assets/` for forbidden reference names starting in Phase 0.
-4. **Versioned saves (`schemaVersion`):**
-   - `SaveManager` stores compact JSON with `schemaVersion`, sparse tile/world diffs, and per-version migration hooks to fit safely within mobile `localStorage` limits.
-5. **Mobile-first isometric ergonomics:**
-   - Target-tile highlight reticle in front of the player, virtual D-pad + tap-to-walk/tap-to-interact support, and safe-area inset handling (`env(safe-area-inset-*)`).
-
----
-
-## Phase 0 — Foundation, tooling & offline shell (weeks 1–2)
-
-Goal: repository tooling, `sim/` vs `render/` architecture, asset/IP pipeline, runnable offline PWA shell with isometric three.js world, movement, time, and versioned save/load.
+Goal: a runnable PWA shell with an isometric three.js world, movement, time, and save.
 
 Features:
 - FV-001 PWA shell → SPEC-FV-001
@@ -46,21 +17,18 @@ Features:
 - FV-020 Tile-based movement → SPEC-FV-020
 - FV-022 Day/night cycle → SPEC-FV-022
 
-Milestone M0: player can start a new game, name character + holding, walk around the holding via touch D-pad/tap or WASD with a visible target-tile reticle, sleep to advance days, save/load across reloads, and install/run offline. Placeholder art and early audio-unlock/SFX stub wired.
+Milestone M0: player can start a new game, name character+holding, walk around the holding, sleep to advance days, and the game installs/works offline. Original art placeholders only.
 
 Deliverables:
-- `package.json`, bundler config, headless test runner + Playwright 375×812 smoke test, IP/name-lint check
-- `src/index.html`, `src/manifest.webmanifest`, `src/sw.js`
-- `src/assets/names.json`, `src/assets/items.json`, `src/assets/ATTRIBUTION.md`, asset conversion script for `extracted-assets/`
-- `src/js/sim/`: `game.js`, `world.js`, `holding.js`, `player.js`, `time.js`, `save.js` (with `schemaVersion`), `settings.js`
-- `src/js/render/`: `scene.js`, `tile-renderer.js` (`InstancedMesh`/atlas), `input.js` (touch + desktop), `audio-stub.js`
+- `src/index.html`, `manifest.webmanifest`, `sw.js`
+- `src/js/world.js`, `src/js/player.js`, `src/js/time.js`, `src/js/save.js`, `src/js/settings.js`
 - `src/tests/*.test.js` for all Phase 0 features, all passing
 
 ---
 
-## Phase 1 — Playable vertical slice: farming, energy & market (weeks 3–5)
+## Phase 1 — Farming core (weeks 3–4)
 
-Goal: a genuinely fun, tactile core farming loop with stamina, economy, starter village shop presence, and early juice (placeholder tool SFX + watering/harvest particles) — plus a mobile playtest & tuning pass in week 5.
+Goal: the core farming loop — till, plant, water, grow, harvest, ship.
 
 Features:
 - FV-030 Tilling soil → SPEC-FV-030
@@ -68,25 +36,22 @@ Features:
 - FV-032 Watering → SPEC-FV-032
 - FV-033 Crop growth stages → SPEC-FV-033
 - FV-034 Harvesting → SPEC-FV-034
-- FV-055 Health & energy (Part 1: Energy bar, tool stamina cost, sleep/food restore; HP & Clinic added in Phase 4) → SPEC-FV-055 (energy subset)
 - FV-083 Shipping bin → SPEC-FV-083
-- FV-084 Reed's Market (including Maren Reed shopkeeper NPC & shop hours) → SPEC-FV-084
-- FV-085 Inventory (tool belt, stackable items, starter chest at the holding) → SPEC-FV-085
-- Early plumbing for FV-131 (placeholder tool/UI SFX) and FV-132 (watering/harvest particles)
+- FV-084 Reed's Market → SPEC-FV-084
+- FV-085 Inventory → SPEC-FV-085
 
-Milestone M1 (**Playable Vertical Slice**): player tills, plants, waters (spending energy), watches crops grow across days, harvests, stores items in a starter chest, ships produce for gold, and buys seeds from Maren Reed at Reed's Market — verified on a 375px touch device for responsiveness and fun.
+Milestone M1: player can till soil, plant crops, water them, watch them grow over days, harvest, and ship for gold at Reed's Market.
 
 Deliverables:
-- `src/js/sim/`: `farm.js`, `crop.js`, `inventory.js`, `chest.js`, `shop.js`, `shipping.js`, `energy.js`
-- `src/js/render/`: crop stage sprites/meshes, minimal `particles.js` and `audio.js` hooks
-- `src/assets/crops.json` (original crop definitions synced with `items.json`)
-- All Phase 1 SPEC tests passing + week 5 mobile UX & economy tuning pass
+- `src/js/farm.js`, `src/js/crop.js`, `src/js/inventory.js`, `src/js/shop.js`, `src/js/shipping.js`
+- Crop data (original crop definitions) in `src/assets/crops.json`
+- All Phase 1 SPEC tests passing
 
 ---
 
-## Phase 2 — World, regions, seasons & foraging (weeks 6–7)
+## Phase 2 — World & regions (weeks 5–6)
 
-Goal: travel beyond the holding across River Village, beach, forest, and mountains; seasons/weather; foraging; trees/debris clearing and regeneration.
+Goal: travel beyond the holding, seasons/weather, foraging, and trees/debris.
 
 Features:
 - FV-021 Region travel → SPEC-FV-021
@@ -95,18 +60,17 @@ Features:
 - FV-071 Trees & debris → SPEC-FV-071
 - FV-072 Resource regeneration → SPEC-FV-072
 
-Milestone M2: player travels seamlessly between Holding, River Village, Beach, Forest, Mountains, and the Deep Warrens entrance; chops trees, breaks stones, gathers seasonal forage, and sees rain auto-water outdoor crops and seasonal palettes shift.
+Milestone M2: player can travel to beach/forest/mountains, forage, chop trees, break stones, and see seasons/weather change gameplay.
 
 Deliverables:
-- `src/js/sim/`: `region.js`, `weather.js`, `forage.js`, `season.js`, `debris.js`
-- Original region tilemaps in `src/assets/maps/` (Holding, River Village, Beach, Forest, Mountains; no reference-map copies)
-- All Phase 2 SPEC tests passing
+- `src/js/region.js`, `src/js/weather.js`, `src/js/forage.js`, `src/js/season.js`
+- Region maps (original) as tile data; no reference-map copies
 
 ---
 
-## Phase 3 — Animals & holding buildings (weeks 8–9)
+## Phase 3 — Animals (weeks 7–8)
 
-Goal: barn/coop placement, buying and caring for original animals, daily products, affection/quality progression, and animal naming.
+Goal: barn/coop, buying and caring for animals, products, happiness, naming.
 
 Features:
 - FV-040 Barn & coop buildings → SPEC-FV-040
@@ -115,18 +79,17 @@ Features:
 - FV-043 Animal happiness → SPEC-FV-043
 - FV-044 Animal naming → SPEC-FV-044
 
-Milestone M3: player places a barn/coop on holding plots, buys original animals at Reed's Market, names them, feeds hay/pets daily, and collects quality-scaled products.
+Milestone M3: player can place a barn/coop, buy original animals at Reed's Market, feed/pet them, and collect products.
 
 Deliverables:
-- `src/js/sim/`: `animal.js`, `building.js`
-- `src/assets/animals.json`
-- All Phase 3 SPEC tests passing
+- `src/js/animal.js`, `src/js/building.js`
+- Original animal definitions in `src/assets/animals.json`
 
 ---
 
-## Phase 4 — Deep Warrens: mining, combat, loot & blacksmith upgrades (weeks 10–12)
+## Phase 4 — Mining & combat (weeks 9–10)
 
-Goal: cohesive dungeon-to-tool-upgrade loop — generated mine floors, ore nodes, monsters, combat, HP/Clinic defeat, monster loot, geodes, and Blacksmith tool upgrades (including 3×3 hoe/watering can). Week 12 includes combat feel and dungeon balance QA.
+Goal: the Deep Warrens mine, ores, monsters, combat, health/energy.
 
 Features:
 - FV-050 Mine entrance → SPEC-FV-050
@@ -134,109 +97,144 @@ Features:
 - FV-052 Monsters → SPEC-FV-052
 - FV-053 Combat → SPEC-FV-053
 - FV-054 Mine floors & ladders → SPEC-FV-054
-- FV-055 Health & energy (Part 2: full HP, damage, 0 HP → Clinic wake-up) → SPEC-FV-055
-- FV-120 Monster roster (Puddle, Glop, Bat, Dust Spirit, Cave Crab, Serpent) → SPEC-FV-120
-- FV-121 Loot drops → SPEC-FV-121
-- FV-122 Geodes → SPEC-FV-122
-- FV-080 Tool upgrades (Blacksmith NPC/shop using ore + gold) → SPEC-FV-080
-- FV-035 Crop tool upgrades (3×3 hoe/watering can unlocked via FV-080) → SPEC-FV-035
+- FV-055 Health & energy → SPEC-FV-055
+- FV-035 Crop tool upgrades → SPEC-FV-035 (tool upgrade plumbing)
 
-Milestone M4: player enters the Deep Warrens, mines copper/iron/gold, fights original monsters with sword/slingshot, collects loot and geodes, descends via ladders and 5-floor checkpoints, wakes at the Clinic at 0 HP, cracks geodes, and upgrades tools at the Blacksmith (unlocking 3×3 tilling/watering).
+Milestone M4: player can enter the mine, mine ore, fight original monsters with a sword, use ladders/checkpoints, and manage HP/energy.
 
 Deliverables:
-- `src/js/sim/`: `mine.js`, `monster.js`, `combat.js`, `health.js`, `loot.js`, `geode.js`, `blacksmith.js`
-- `src/assets/monsters.json`, `src/assets/loot.json`
-- All Phase 4 SPEC tests passing + combat/hit-flash/knockback mobile playtest
+- `src/js/mine.js`, `src/js/monster.js`, `src/js/combat.js`, `src/js/health.js`
+- Original monster definitions in `src/assets/monsters.json`
 
 ---
 
-## Phase 5 — Fishing, crafting & cooking (weeks 13–14)
+## Phase 5 — Fishing (weeks 11–12)
 
-Goal: original timing-based fishing system, fishing progression, craftable machines/storage, and kitchen cooking for energy/HP recovery.
+Goal: fishing spots, original fishing minigame, skill levels, rods.
 
 Features:
 - FV-060 Fishing spots → SPEC-FV-060
-- FV-061 Fishing minigame (shared implementation with FV-110) → SPEC-FV-061
+- FV-061 Fishing minigame → SPEC-FV-061
 - FV-062 Fishing levels → SPEC-FV-062
+
+Milestone M5: player can fish at river/beach/lake through an original timing minigame and raise fishing level.
+
+Deliverables:
+- `src/js/fishing.js`, `src/js/fishing-minigame.js`
+- Original fish definitions in `src/assets/fish.json`
+
+---
+
+## Phase 6 — Crafting, cooking & tools (weeks 13–14)
+
+Goal: crafting recipes, cooking, tool upgrades at blacksmith.
+
+Features:
+- FV-080 Tool upgrades → SPEC-FV-080
 - FV-081 Crafting menu → SPEC-FV-081
 - FV-082 Cooking → SPEC-FV-082
 
-Milestone M5: player fishes at river/beach/mountain lake via an original touch-friendly timing minigame, levels fishing skill for better rods, crafts chests/fences/kegs/sprinklers, and cooks dishes that restore energy and HP.
+Milestone M6: player can craft fences/kegs/chests, cook dishes that restore energy/HP, and upgrade tools at the blacksmith.
 
 Deliverables:
-- `src/js/sim/`: `fishing.js`, `fishing-minigame.js`, `crafting.js`, `kitchen.js`
-- `src/assets/fish.json`, `src/assets/recipes.json`
-- All Phase 5 SPEC tests passing
+- `src/js/crafting.js`, `src/js/kitchen.js`, `src/js/blacksmith.js`
+- Recipes in `src/assets/recipes.json`
 
 ---
 
-## Phase 6 — Core villagers, relationships & mail (weeks 15–17)
+## Phase 7 — Villagers & relationships (weeks 15–16)
 
-Goal: bring River Village to life with scheduled villagers, context-aware dialogue, gifting/friendship progression, and mailbox letters. (Starts with core town NPCs and scales up to the full roster.)
+Goal: 10 original villagers, schedules, dialogue, friendship, gifts, marriage.
 
 Features:
-- FV-090 Villagers (schedules, homes, workplaces; core 6 villagers first, expanding to 10) → SPEC-FV-090
-- FV-091 Dialogue (varies by day, season, weather, friendship) → SPEC-FV-091
-- FV-092 Friendship (0–10 hearts) → SPEC-FV-092
-- FV-093 Gifts (love/like/neutral/dislike reaction tables) → SPEC-FV-093
-- FV-102 Mail system (letters, gifts, invitations at holding mailbox) → SPEC-FV-102
+- FV-090 Villagers → SPEC-FV-090
+- FV-091 Dialogue → SPEC-FV-091
+- FV-092 Friendship → SPEC-FV-092
+- FV-093 Gifts → SPEC-FV-093
+- FV-094 Marriage → SPEC-FV-094
 
-Milestone M6 (**v1.0 Feature-Complete Candidate**): villagers follow daily schedules around town, respond with dynamic dialogue and gift reactions, build friendship hearts, and send mail to the holding.
+Milestone M7: villagers walk schedules, dialogue changes by friendship/season, gifting raises hearts, and marriage at 10 hearts moves a spouse to the holding.
 
 Deliverables:
-- `src/js/sim/`: `villager.js`, `schedule.js`, `dialogue.js`, `friendship.js`, `mail.js`
-- `src/assets/villagers.json`
-- All Phase 6 SPEC tests passing
+- `src/js/villager.js`, `src/js/schedule.js`, `src/js/dialogue.js`, `src/js/friendship.js`, `src/js/marriage.js`
+- Original villager definitions in `src/assets/villagers.json`
 
 ---
 
-## Phase 7 — Audio, particles & v1.0 release polish (weeks 18–19)
+## Phase 8 — Festivals & events (weeks 17–18)
 
-Goal: replace placeholder audio/effects with full original music per region/season, full SFX coverage, rich particles, mobile performance optimization, and offline PWA QA for **River Village v1.0**.
+Goal: 4 season festivals, villager/birthday events, mail.
+
+Features:
+- FV-100 Season festivals → SPEC-FV-100
+- FV-101 Villager events → SPEC-FV-101
+- FV-102 Mail system → SPEC-FV-102
+
+Milestone M8: festival days switch the village to festival mode with minigames and rewards; birthdays and heart events fire; mail arrives.
+
+Deliverables:
+- `src/js/festival.js`, `src/js/events.js`, `src/js/mail.js`
+- Festival calendar in `src/assets/festivals.json`
+
+---
+
+## Phase 9 — Minigames & arcade (weeks 19–20)
+
+Goal: festival contests, saloon arcade.
+
+Features:
+- FV-110 Fishing minigame (shared with FV-061) → SPEC-FV-110
+- FV-111 Festival games → SPEC-FV-111
+- FV-112 Arcade at the saloon → SPEC-FV-112
+
+Milestone M9: the saloon arcade and festival contests are playable for tokens/prizes.
+
+Deliverables:
+- `src/js/arcade.js`, `src/js/festival-games.js`
+
+---
+
+## Phase 10 — Monsters loot & geodes (weeks 21–22)
+
+Goal: monster loot table, geode cracking.
+
+Features:
+- FV-120 Monster roster → SPEC-FV-120
+- FV-121 Loot drops → SPEC-FV-121
+- FV-122 Geodes → SPEC-FV-122
+
+Milestone M10: monsters drop original loot; geodes crack at the blacksmith into minerals/artifacts.
+
+Deliverables:
+- `src/js/loot.js`, `src/js/geode.js`
+
+---
+
+## Phase 11 — Audio, particles & polish (weeks 23–24)
+
+Goal: original music, SFX, particles, PWA final QA.
 
 Features:
 - FV-130 Music → SPEC-FV-130
 - FV-131 Sound effects → SPEC-FV-131
 - FV-132 Particle effects → SPEC-FV-132
-- Final polish & device QA on FV-001..FV-004 (installability, offline cache ≤ 30 MB, 375px layout, save migration verification)
+- All remaining FV-001..FV-004 shell polish
 
-Milestone M7 (**River Village v1.0 Ship Gate**): complete core farm-life loop (farming, seasons, animals, Deep Warrens, fishing, crafting/cooking, villagers, mail, full audio/particles), playable offline on mobile PWA and desktop.
+Milestone M11: full audio (original), particles for farming/fishing/combat, PWA installable + offline, all SPEC tests passing.
 
 Deliverables:
-- Final `src/js/render/audio.js`, `src/js/render/particles.js`
-- Original/converted OGG/MP3 audio in `src/assets/audio/`
-- Precache audit + mobile hardware QA sign-off
+- `src/js/audio.js`, `src/js/particles.js`
+- Original audio in `src/assets/audio/` (OGG/MP3); original music per region/season
 
 ---
 
-## Phase 8 — Expansion / v1.1 content: marriage, festivals & arcade (weeks 20–24)
+## Release — River Village v1.0
 
-*Note: Can ship as v1.1 post-launch or merge into v1.0 if Phases 0–7 finish ahead of schedule.*
-
-### Sub-phase 8A — Full roster, marriage & heart/birthday events (weeks 20–21)
-- FV-090 expansion to full 10 original villagers → SPEC-FV-090
-- FV-094 Marriage (10-heart proposal with original pendant, spouse moves to holding) → SPEC-FV-094
-- FV-101 Villager events (heart events & birthdays) → SPEC-FV-101
-- Deliverables: `src/js/sim/marriage.js`, `src/js/sim/events.js`
-
-### Sub-phase 8B — Season festivals & saloon arcade (weeks 22–24)
-- FV-100 Season festivals (Spring Egg Hunt, Summer Luau, Fall Fair, Winter Feast) → SPEC-FV-100
-- FV-110 Fishing minigame (festival contest integration) → SPEC-FV-110
-- FV-111 Festival games → SPEC-FV-111
-- FV-112 Arcade at the saloon → SPEC-FV-112
-- Deliverables: `src/js/sim/festival.js`, `src/js/sim/festival-games.js`, `src/js/sim/arcade.js`, `src/assets/festivals.json`
-
-Milestone M8 (**Full 57-Feature Completion**): all 10 villagers, marriage, birthdays/heart events, 4 seasonal festivals, and the saloon arcade cabinet playable and tested.
-
----
-
-## Release checklist — Full River Village
-
-- All **57** `SPEC` tests (`FV-001` through `FV-132`) pass in `src/tests/<feature-id>.test.js`
-- Mobile-first verified on `375×812`+ touch viewports (all interactive targets ≥44×44 CSS px, no hover-only interactions)
-- PWA installs and runs 100% offline with precache within budget (≤ 30 MB)
-- Original names only (automated check against `src/assets/names.json`)
-- No reference-game source formats (`.xnb`, `.xwb`, `.xsb`) or unattributed assets in `src/assets/`
+- All 33 SPEC tests pass
+- Mobile-first verified on 375px+ viewports
+- PWA installs and runs offline
+- Original names only (checked against `src/assets/names.json`)
+- No reference-game assets in `src/assets/`
 
 ## Naming reminder
 

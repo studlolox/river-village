@@ -1,9 +1,0 @@
-{
-  "region": "River Village",
-  "width": 24,
-  "height": 18,
-  "landmarks": ["Reed's Market", "Clinic", "Blacksmith", "Saloon"],
-  "warps": [
-    { "x": 23, "y": 8, "toRegion": "Holding", "toX": 1, "toY": 8 }
-  ]
-}

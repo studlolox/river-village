@@ -1,9 +1,0 @@
-{
-  "region": "Mountains",
-  "width": 24,
-  "height": 18,
-  "landmarks": ["The Deep Warrens"],
-  "warps": [
-    { "x": 12, "y": 17, "toRegion": "Forest", "toX": 12, "toY": 1 }
-  ]
-}

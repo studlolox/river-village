@@ -53,9 +53,6 @@ When adding a new named entity, pick a name not found in the reference game, add
 
 ## Development rules
 
-- Do everything yourself, Never ask me anything.
-- Announce each step in one line before u do it
-
 1. **One test per feature.** Every feature in `SPEC.md` has exactly one test in `src/tests/`. Test files are named `<feature-id>.test.js`. A feature is "done" when its test passes.
 2. **Mobile-first.** Every new screen/component is first made usable on a 375px-wide touch device; desktop enhancements come after.
 3. **Touch-friendly targets.** Interactive elements are at least 44x44 CSS pixels; no hover-only interactions.
