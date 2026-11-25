@@ -5,7 +5,7 @@ River Village is a complete single-player, farm-life-inspired game built with **
 ## Project identity (hard rules)
 
 1. **Original IP only.** River Village is an original game inspired by the farm-life genre. No character, place, creature, crop, item, festival, song, sound effect, or text from the reference game may appear in the shipped product. Every River Village character, place, creature, and item must have an original name invented by the team.
-2. **Reference assets are study-only.** The APK contents under `extracted-assets/` were recovered with REA solely to understand feature scope, data layout, art direction, audio structure, and map/tile organization. They are NOT game assets for this project and must never be copied into `src/assets/` or any build output.
+2. **Reference assets may be used and converted.** The APK contents under `extracted-assets/` were recovered with REA and MAY be converted and used as the basis for River Village game assets (textures, maps, audio, data). They must be converted out of XNB/.xwb/.xsb into web formats (PNG/WebP/GLTF/OGG/MP3/JSON) and placed under `src/assets/`. However: **no name from the reference game may appear anywhere in code, dialogue, UI, file names, or asset metadata.** Every River Village character, place, creature, crop, item, festival, and location must have an original name invented by the team.
 3. **Platforms first:** desktop browser and mobile PWA (installable, offline-capable shell). Mobile-first design: touch controls come before mouse/keyboard, layouts scale from small screens up.
 4. **Single player only.** No multiplayer, no networking, no server.
 5. **Engine:** three.js (WebGL/WebGPU renderer as available), vanilla JS or TypeScript as chosen per phase, no game engine dependency.
@@ -18,14 +18,14 @@ river-village/
   features.md          # feature catalogue (what we build)
   SPEC.md              # every feature with exactly one acceptance test
   PLAN.md              # phased delivery plan
-  extracted-assets/    # REA study material from reference APK — DO NOT SHIP
+  extracted-assets/    # REA-recovered reference APK contents — convertible to src/assets/
   src/
     index.html         # PWA shell
     manifest.webmanifest
     sw.js              # service worker
     css/               # mobile-first styles
     js/                # game source (modules)
-    assets/            # ORIGINAL game assets only (art, audio, fonts, maps)
+    assets/            # converted/original game assets (art, audio, fonts, maps); original names only
     tests/             # one test file per SPEC feature
 ```
 
@@ -47,9 +47,9 @@ When adding a new named entity, pick a name not found in the reference game, add
 
 ## Asset policy
 
-- `extracted-assets/` is read-only reference. Never import its files into the build.
-- All shipped art, audio, and fonts must be original or CC0/equivalent with attribution recorded in `src/assets/ATTRIBUTION.md`.
-- XNB/.xwb/.xsb formats from the reference are not used; ship PNG/WebP/GLTF/OGG/MP3.
+- `extracted-assets/` is read-only source material. Convert XNB/.xwb/.xsb to web formats and place results under `src/assets/`.
+- All shipped art, audio, and fonts must be original, converted-from-reference, or CC0/equivalent with attribution recorded in `src/assets/ATTRIBUTION.md`.
+- XNB/.xwb/.xsb formats from the reference are not shipped; ship PNG/WebP/GLTF/OGG/MP3.
 
 ## Development rules
 
