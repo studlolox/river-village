@@ -4,3 +4,5 @@ node_modules/
 dist/
 build/
 .tmp_asset_ids.json
+test-results/
+playwright-report/

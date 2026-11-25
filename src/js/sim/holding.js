@@ -23,10 +23,10 @@ export class HoldingMap {
         // River along the bottom-most 2 rows
         if (y >= this.height - 2) {
           kind = 'water';
-        } else if (x >= 4 && x <= 14 && y >= 8 && y <= 15) {
+        } else if (x >= 2 && x <= 14 && y >= 2 && y <= 15) {
           // Central tillable dirt field
           kind = 'tillable';
-        } else if (x >= 2 && x <= 4 && y >= 2 && y <= 3) {
+        } else if (x >= 16 && x <= 18 && y >= 2 && y <= 3) {
           // Farmhouse footprint
           kind = 'house';
         }

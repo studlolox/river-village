@@ -4,12 +4,20 @@ const TILE_COLORS = {
   grass: new THREE.Color('#5a9e56'),
   tillable: new THREE.Color('#b4885a'),
   tilled: new THREE.Color('#7c5230'),
+  watered: new THREE.Color('#4a2e18'),
   water: new THREE.Color('#3f8fb8'),
   house: new THREE.Color('#9f6a46')
 };
 
+const CROP_STAGE_COLORS = {
+  seed: new THREE.Color('#d6c07b'),
+  sprout: new THREE.Color('#7ec850'),
+  young: new THREE.Color('#4aa348'),
+  mature: new THREE.Color('#f4c542')
+};
+
 /**
- * Renders the holding map using InstancedMesh batches (< 10 draw calls total).
+ * Renders the holding map and crop stages using InstancedMesh batches (< 15 draw calls total).
  */
 export class TileRenderer {
   constructor(scene, holdingMap) {
@@ -19,6 +27,7 @@ export class TileRenderer {
     this._color = new THREE.Color();
 
     this.groundMesh = null;
+    this.cropMesh = null;
     this.trunkMesh = null;
     this.canopyMesh = null;
     this.rockMesh = null;
@@ -35,6 +44,11 @@ export class TileRenderer {
     this.groundMesh = new THREE.InstancedMesh(groundGeo, groundMat, count);
     this.groundMesh.receiveShadow = true;
 
+    const cropGeo = new THREE.ConeGeometry(0.28, 0.55, 6);
+    const cropMat = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+    this.cropMesh = new THREE.InstancedMesh(cropGeo, cropMat, count);
+    this.cropMesh.count = 0;
+
     let treeCount = 0;
     let rockCount = 0;
 
@@ -45,19 +59,12 @@ export class TileRenderer {
       this._dummy.updateMatrix();
       this.groundMesh.setMatrixAt(i, this._dummy.matrix);
 
-      const baseColor = TILE_COLORS[tile.kind] || TILE_COLORS.grass;
-      this._color.copy(baseColor);
-      if ((tile.x + tile.y) % 2 === 0) {
-        this._color.offsetHSL(0, 0, -0.02);
-      }
-      this.groundMesh.setColorAt(i, this._color);
-
       if (tile.object === 'tree') treeCount++;
       if (tile.object === 'rock') rockCount++;
     }
     this.groundMesh.instanceMatrix.needsUpdate = true;
-    if (this.groundMesh.instanceColor) this.groundMesh.instanceColor.needsUpdate = true;
     this.scene.add(this.groundMesh);
+    this.scene.add(this.cropMesh);
 
     if (treeCount > 0) {
       const trunkGeo = new THREE.CylinderGeometry(0.14, 0.18, 0.6, 6);
@@ -105,7 +112,7 @@ export class TileRenderer {
     const houseGeo = new THREE.BoxGeometry(2.6, 1.3, 1.8);
     const houseMat = new THREE.MeshLambertMaterial({ color: '#d8b48a' });
     this.houseMesh = new THREE.Mesh(houseGeo, houseMat);
-    this.houseMesh.position.set(3, 0.65, 2.5);
+    this.houseMesh.position.set(17, 0.65, 2.5);
     this.scene.add(this.houseMesh);
 
     const roofGeo = new THREE.ConeGeometry(2.1, 0.9, 4);
@@ -126,6 +133,38 @@ export class TileRenderer {
     this.reticleMesh = new THREE.Mesh(reticleGeo, reticleMat);
     this.reticleMesh.position.set(4, 0.02, 7);
     this.scene.add(this.reticleMesh);
+
+    this.refreshTiles();
+  }
+
+  refreshTiles() {
+    let cropIdx = 0;
+    for (let i = 0; i < this.map.tiles.length; i++) {
+      const tile = this.map.tiles[i];
+      const baseColor = tile.watered
+        ? TILE_COLORS.watered
+        : (TILE_COLORS[tile.kind] || TILE_COLORS.grass);
+      this._color.copy(baseColor);
+      if ((tile.x + tile.y) % 2 === 0) {
+        this._color.offsetHSL(0, 0, -0.02);
+      }
+      this.groundMesh.setColorAt(i, this._color);
+
+      if (tile.crop) {
+        const scaleByStage = { seed: 0.3, sprout: 0.55, young: 0.85, mature: 1.15 };
+        const s = scaleByStage[tile.crop.stage] || 0.4;
+        this._dummy.position.set(tile.x, 0.25 * s, tile.y);
+        this._dummy.scale.set(s, s, s);
+        this._dummy.updateMatrix();
+        this.cropMesh.setMatrixAt(cropIdx, this._dummy.matrix);
+        this.cropMesh.setColorAt(cropIdx, CROP_STAGE_COLORS[tile.crop.stage] || CROP_STAGE_COLORS.seed);
+        cropIdx++;
+      }
+    }
+    this.cropMesh.count = cropIdx;
+    this.cropMesh.instanceMatrix.needsUpdate = true;
+    if (this.cropMesh.instanceColor) this.cropMesh.instanceColor.needsUpdate = true;
+    if (this.groundMesh.instanceColor) this.groundMesh.instanceColor.needsUpdate = true;
   }
 
   setReticle(x, y) {

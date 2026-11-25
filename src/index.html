@@ -23,11 +23,21 @@
     </div>
     <div class="hud-actions">
       <button id="btn-install" class="touch-btn primary" hidden>Install</button>
+      <button id="btn-bag" class="touch-btn">Bag</button>
+      <button id="btn-market" class="touch-btn">Market</button>
       <button id="btn-sleep" class="touch-btn">Sleep</button>
       <button id="btn-saves" class="touch-btn">Saves</button>
       <button id="btn-settings" class="touch-btn">Settings</button>
     </div>
   </header>
+
+  <aside id="ftue-pill" class="ftue-pill hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px;">
+      <strong style="color:var(--accent);">Starter Checklist</strong>
+      <button id="btn-dismiss-ftue" class="touch-btn" style="padding:4px 8px;font-size:11px;">Hide</button>
+    </div>
+    <div id="ftue-steps"></div>
+  </aside>
 
   <footer class="hud-bottom">
     <div class="thumbstick-zone" id="thumbstick" aria-label="Movement thumbstick">
@@ -37,8 +47,8 @@
       <div class="quick-bar" id="quick-bar">
         <button class="touch-btn quick-slot active" data-tool="hoe">Hoe</button>
         <button class="touch-btn quick-slot" data-tool="wateringCan">Can</button>
+        <button class="touch-btn quick-slot" data-tool="seed">Seed</button>
         <button class="touch-btn quick-slot" data-tool="axe">Axe</button>
-        <button class="touch-btn quick-slot" data-tool="pickaxe">Pick</button>
       </div>
       <button id="btn-action" class="touch-btn primary action-btn">Act</button>
     </div>
@@ -110,6 +120,28 @@
       <h2>Save & Load</h2>
       <div id="save-slots-list"></div>
       <button id="btn-close-saves" class="touch-btn primary">Close</button>
+    </div>
+  </div>
+
+  <!-- Bag, Chest & Shipping Modal -->
+  <div id="modal-bag" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <h2>Bag & Shipping</h2>
+      <div id="bag-items-list"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="btn-ship-all" class="touch-btn primary">Ship All</button>
+        <button id="btn-deposit-chest" class="touch-btn">Store All in Chest</button>
+        <button id="btn-close-bag" class="touch-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reed's Market Modal -->
+  <div id="modal-market" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <h2>Reed's Market (Maren Reed)</h2>
+      <div id="market-stock-list"></div>
+      <button id="btn-close-market" class="touch-btn primary">Close</button>
     </div>
   </div>
 

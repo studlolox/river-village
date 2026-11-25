@@ -243,6 +243,28 @@ html, body {
   display: none;
 }
 
+.ftue-pill {
+  position: fixed;
+  top: calc(64px + var(--safe-top));
+  left: calc(8px + var(--safe-left));
+  background: var(--panel-bg);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 12px;
+  max-width: 240px;
+  z-index: 9;
+}
+
+.ftue-pill.hidden {
+  display: none;
+}
+
+.ftue-step.done {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
 @media (max-height: 450px) and (orientation: landscape) {
   .thumbstick-zone {
     width: 80px;

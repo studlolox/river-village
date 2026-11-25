@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { TileRenderer } from './tile-renderer.js';
+import { ParticleSystem } from './particles.js';
 
 /**
  * 2.5D OrthographicCamera scene with DPR cap, <50 draw calls, and zero per-frame allocations.
@@ -28,6 +29,7 @@ export class GameScene {
     this.scene.add(this.sunLight);
 
     this.tileRenderer = new TileRenderer(this.scene, game.holding.map);
+    this.particles = new ParticleSystem(this.scene);
     this.playerMesh = this._createPlayerMesh(game.player.appearance);
     this.scene.add(this.playerMesh);
 
@@ -53,6 +55,10 @@ export class GameScene {
     return group;
   }
 
+  refreshTiles() {
+    this.tileRenderer.refreshTiles();
+  }
+
   applyQualityMode(mode) {
     const cap = mode === 'battery' ? 1 : 2;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
@@ -74,7 +80,6 @@ export class GameScene {
     const rect = this.canvas.getBoundingClientRect();
     const ndcX = ((clientX - rect.left) / rect.width) * 2 - 1;
     const ndcY = -((clientY - rect.top) / rect.height) * 2 + 1;
-    // Orthographic unproject onto y=0 plane
     const origin = this._lookTarget.set(ndcX, ndcY, 0).unproject(this.camera);
     const dir = this._desiredCamPos.set(0, 0, -1).transformDirection(this.camera.matrixWorld);
     if (Math.abs(dir.y) < 1e-4) return null;
@@ -96,7 +101,6 @@ export class GameScene {
     this.camera.position.lerp(this._desiredCamPos, Math.min(1, dt * 8));
     this.camera.lookAt(this._lookTarget);
 
-    // Update target reticle in front of player
     const facing = this.game.player.facing;
     let rx = gx;
     let rz = gz;
@@ -106,11 +110,11 @@ export class GameScene {
     if (facing.includes('right')) rx += 1;
     this.tileRenderer.setReticle(rx, rz);
 
-    // Day/night lighting shift
     const sun = this.game.timeOfDay.sunFactor();
     this.ambientLight.intensity = 0.35 + sun * 0.45;
     this.sunLight.intensity = 0.2 + sun * 0.75;
 
+    this.particles.update(dt);
     this.renderer.render(this.scene, this.camera);
   }
 

@@ -1,0 +1,33 @@
+{
+  "startingGold": 500,
+  "energyCosts": {
+    "hoe": 2,
+    "wateringCan": 2,
+    "axe": 3,
+    "pickaxe": 3,
+    "scythe": 0
+  },
+  "sellPrices": {
+    "SpringRoot": 80,
+    "springRoot": 80,
+    "riverLeaf": 55,
+    "sunMelon": 180,
+    "autumnSquash": 150,
+    "Wood": 2,
+    "Stone": 2
+  },
+  "shopStock": {
+    "Spring": [
+      { "id": "SpringRootSeed", "alias": "springRootSeed", "price": 20 },
+      { "id": "riverLeafSeed", "price": 35 }
+    ],
+    "Summer": [
+      { "id": "riverLeafSeed", "price": 35 },
+      { "id": "sunMelonSeed", "price": 60 }
+    ],
+    "Fall": [
+      { "id": "autumnSquashSeed", "price": 50 }
+    ],
+    "Winter": []
+  }
+}

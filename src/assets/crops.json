@@ -1,0 +1,54 @@
+{
+  "springRoot": {
+    "id": "springRoot",
+    "seedId": "springRootSeed",
+    "name": "Spring Root",
+    "seasons": ["Spring"],
+    "daysToMature": 3,
+    "regrowDays": 0,
+    "harvestYield": 1,
+    "buyPrice": 20,
+    "sellPrice": 80,
+    "energyRestore": 20,
+    "hpRestore": 10
+  },
+  "riverLeaf": {
+    "id": "riverLeaf",
+    "seedId": "riverLeafSeed",
+    "name": "River Leaf",
+    "seasons": ["Spring", "Summer"],
+    "daysToMature": 4,
+    "regrowDays": 2,
+    "harvestYield": 1,
+    "buyPrice": 35,
+    "sellPrice": 55,
+    "energyRestore": 15,
+    "hpRestore": 8
+  },
+  "sunMelon": {
+    "id": "sunMelon",
+    "seedId": "sunMelonSeed",
+    "name": "Sun Melon",
+    "seasons": ["Summer"],
+    "daysToMature": 6,
+    "regrowDays": 0,
+    "harvestYield": 1,
+    "buyPrice": 60,
+    "sellPrice": 180,
+    "energyRestore": 35,
+    "hpRestore": 20
+  },
+  "autumnSquash": {
+    "id": "autumnSquash",
+    "seedId": "autumnSquashSeed",
+    "name": "Autumn Squash",
+    "seasons": ["Fall"],
+    "daysToMature": 5,
+    "regrowDays": 0,
+    "harvestYield": 1,
+    "buyPrice": 50,
+    "sellPrice": 150,
+    "energyRestore": 30,
+    "hpRestore": 15
+  }
+}

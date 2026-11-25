@@ -1,5 +1,5 @@
 /**
- * Handles floating virtual thumbstick, tap-on-tile, and WASD/arrow keyboard movement.
+ * Handles floating virtual thumbstick, tap-on-tile, hold-drag chaining, and WASD/arrow movement.
  */
 export class InputController {
   constructor(canvas, thumbZone, onMove, onTapTile, onUnlockAudio) {
@@ -12,6 +12,8 @@ export class InputController {
     this._activeDir = null;
     this._moveCooldown = 0;
     this._stickPointerId = null;
+    this._canvasPointerId = null;
+    this._lastDragKey = null;
     this._stickOrigin = { x: 0, y: 0 };
     this._knob = thumbZone?.querySelector('.thumbstick-knob') || null;
 
@@ -61,8 +63,24 @@ export class InputController {
     if (this.canvas) {
       this.canvas.addEventListener('pointerdown', (e) => {
         this.onUnlockAudio?.();
-        this.onTapTile?.(e.clientX, e.clientY);
+        this._canvasPointerId = e.pointerId;
+        this._lastDragKey = null;
+        this.onTapTile?.(e.clientX, e.clientY, false);
       });
+
+      this.canvas.addEventListener('pointermove', (e) => {
+        if (e.pointerId !== this._canvasPointerId) return;
+        this.onTapTile?.(e.clientX, e.clientY, true);
+      });
+
+      const endCanvas = (e) => {
+        if (e.pointerId === this._canvasPointerId) {
+          this._canvasPointerId = null;
+          this._lastDragKey = null;
+        }
+      };
+      this.canvas.addEventListener('pointerup', endCanvas);
+      this.canvas.addEventListener('pointercancel', endCanvas);
     }
   }
 
