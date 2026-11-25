@@ -10,7 +10,7 @@ const DIRECTION_DELTAS = {
 };
 
 /**
- * Player character entity with grid movement, facing, stats, and tool state.
+ * Player character entity with grid movement, facing, stats, and tool/world actions.
  */
 export class Player {
   constructor(opts = {}) {
@@ -24,8 +24,28 @@ export class Player {
     this.maxEnergy = opts.maxEnergy ?? 100;
     this.energy = opts.energy ?? this.maxEnergy;
     this.equippedTool = opts.tool || 'hoe';
+    this.tools = {
+      hoe: { tier: opts.upgraded && this.equippedTool === 'hoe' ? 2 : 1 },
+      wateringCan: { tier: opts.upgraded && this.equippedTool === 'wateringCan' ? 2 : 1 },
+      axe: { tier: 1 },
+      pickaxe: { tier: 1 },
+      sword: { tier: 1 },
+      rod: { tier: 1 },
+    };
     this.upgradedTools = new Set(opts.upgraded ? [this.equippedTool] : []);
-    this.fishing = { level: 1, xp: 0, catchFish: () => { this.fishing.xp += 25; this.fishing.level = 1 + Math.floor(this.fishing.xp / 25); } };
+    this.inventoryMap = opts.inventory || null;
+    this.fishing = {
+      level: 1,
+      xp: 0,
+      catchFish: () => {
+        this.fishing.xp += 25;
+        this.fishing.level = 1 + Math.floor(this.fishing.xp / 25);
+      },
+    };
+  }
+
+  tool(name) {
+    return this.tools[name] || { tier: 1 };
   }
 
   handleInput(input, bounds = null) {
@@ -56,5 +76,45 @@ export class Player {
   targetTile() {
     const d = DIRECTION_DELTAS[this.facing] || { dx: 0, dy: 1 };
     return { x: this.gridPos.x + d.dx, y: this.gridPos.y + d.dy };
+  }
+
+  interactAt(target, x, y, inventory) {
+    if (typeof target.pickForage === 'function') {
+      return target.pickForage(x, y, inventory);
+    }
+    return false;
+  }
+
+  useToolAt(target, x, y, toolOrInv = null, maybeInv = null) {
+    let toolName = this.equippedTool;
+    let inv = maybeInv;
+    if (typeof toolOrInv === 'string') {
+      toolName = toolOrInv;
+    } else if (toolOrInv && typeof toolOrInv.add === 'function') {
+      inv = toolOrInv;
+    }
+
+    if (typeof target.useTool === 'function') {
+      const area = this.upgradedTools.has(toolName) || this.tool(toolName).tier >= 2 ? 3 : 1;
+      target.useTool(x, y, toolName, area);
+      return true;
+    }
+    if (typeof target.mineNode === 'function' && toolName === 'pickaxe') {
+      return target.mineNode(x, y, inv);
+    }
+    if (typeof target.chopTree === 'function' && toolName === 'axe') {
+      return target.chopTree(x, y, inv);
+    }
+    return false;
+  }
+
+  attack(mine, monster) {
+    const dmg = 15;
+    if (typeof monster.takeDamage === 'function') {
+      monster.takeDamage(dmg);
+    } else {
+      monster.hp = Math.max(0, monster.hp - dmg);
+      if (monster.hp === 0) monster.dead = true;
+    }
   }
 }

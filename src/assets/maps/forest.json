@@ -1,0 +1,10 @@
+{
+  "region": "Forest",
+  "width": 24,
+  "height": 18,
+  "landmarks": ["Hollow Hill"],
+  "warps": [
+    { "x": 0, "y": 6, "toRegion": "Holding", "toX": 23, "toY": 6 },
+    { "x": 12, "y": 0, "toRegion": "Mountains", "toX": 12, "toY": 16 }
+  ]
+}
