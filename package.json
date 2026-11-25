@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:names": "node scripts/check-names.mjs",
-    "check:phase": "npm test && npm run check:names && npm run build"
+    "check:budget": "node scripts/check-budget.mjs",
+    "check:phase": "npm test && npm run check:names && npm run build && npm run check:budget"
   },
   "dependencies": {
     "three": "^0.170.0"
