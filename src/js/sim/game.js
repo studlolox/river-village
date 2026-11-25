@@ -101,6 +101,15 @@ export class Game {
     }
   }
 
+  handlePlayerDefeat() {
+    if (this.player.hp <= 0) {
+      this.player.location = 'Clinic';
+      this.player.hp = Math.max(10, Math.floor(this.player.maxHp * 0.5));
+      this.player.energy = Math.max(10, Math.floor(this.player.maxEnergy * 0.5));
+      this.player.gold = Math.max(0, this.player.gold - 50);
+    }
+  }
+
   toJSON() {
     return {
       day: this.date.day,

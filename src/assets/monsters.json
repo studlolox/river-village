@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "monsters": [
+    { "kind": "Puddle", "maxHp": 24, "damage": 8, "minFloor": 1 },
+    { "kind": "Glop", "maxHp": 36, "damage": 12, "minFloor": 5 },
+    { "kind": "Bat", "maxHp": 28, "damage": 10, "minFloor": 3 },
+    { "kind": "Dust Spirit", "maxHp": 40, "damage": 14, "minFloor": 10 },
+    { "kind": "Cave Crab", "maxHp": 50, "damage": 15, "minFloor": 8 },
+    { "kind": "Serpent", "maxHp": 65, "damage": 20, "minFloor": 15 }
+  ]
+}

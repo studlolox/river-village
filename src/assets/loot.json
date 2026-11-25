@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "lootTables": {
+    "Puddle": [{ "kind": "Slime", "qty": 1 }],
+    "Glop": [{ "kind": "Slime", "qty": 2 }, { "kind": "CaveGeode", "qty": 1 }],
+    "Bat": [{ "kind": "BatWing", "qty": 1 }],
+    "Dust Spirit": [{ "kind": "Coal", "qty": 1 }],
+    "Cave Crab": [{ "kind": "CopperOre", "qty": 1 }],
+    "Serpent": [{ "kind": "CaveGeode", "qty": 1 }]
+  }
+}
