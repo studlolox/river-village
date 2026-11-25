@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "fish": {
+    "RiverDace": { "spot": "River", "minLevel": 1, "sellPrice": 45 },
+    "SilverBream": { "spot": "River", "minLevel": 2, "sellPrice": 70 },
+    "TidePerch": { "spot": "Beach", "minLevel": 1, "sellPrice": 55 },
+    "BrookTrout": { "spot": "Lake", "minLevel": 2, "sellPrice": 85 },
+    "DeepCarp": { "spot": "Lake", "minLevel": 3, "sellPrice": 110 }
+  }
+}

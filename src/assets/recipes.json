@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "crafting": {
+    "Chest": { "Wood": 50, "Stone": 0 },
+    "Fence": { "Wood": 2 },
+    "Sprinkler": { "CopperOre": 5, "Stone": 5 },
+    "Keg": { "Wood": 30, "CopperOre": 2 }
+  },
+  "cooking": {
+    "VegetableStew": { "energyRestore": 50, "hpRestore": 25 },
+    "BerryTart": { "energyRestore": 40, "hpRestore": 20 },
+    "GrilledDace": { "energyRestore": 35, "hpRestore": 18 }
+  }
+}
