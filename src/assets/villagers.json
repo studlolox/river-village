@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "villagers": [
+    { "name": "Maren Reed", "role": "Market Keeper", "birthday": { "season": "Summer", "day": 12 }, "loves": ["WildBerry", "SpringRoot"], "dislikes": ["Stone", "Slime"] },
+    { "name": "Bramwell Forge", "role": "Blacksmith", "birthday": { "season": "Fall", "day": 4 }, "loves": ["CopperOre", "RiverQuartz"], "dislikes": ["Wood"] },
+    { "name": "Dr. Linnea Vance", "role": "Clinic Doctor", "birthday": { "season": "Winter", "day": 18 }, "loves": ["BerryTart", "SpringOnion"], "dislikes": ["Stone"] },
+    { "name": "Thistle", "role": "Hedgewitch of Hollow Hill", "birthday": { "season": "Fall", "day": 21 }, "loves": ["SunstoneRelic", "FrostBerry"], "dislikes": ["CopperOre"] },
+    { "name": "Rowan Pike", "role": "River Angler", "birthday": { "season": "Spring", "day": 9 }, "loves": ["RiverDace", "GrilledDace"], "dislikes": ["Stone"] },
+    { "name": "Cora Vale", "role": "Carpenter", "birthday": { "season": "Summer", "day": 24 }, "loves": ["Wood", "VegetableStew"], "dislikes": ["Slime"] },
+    { "name": "Alden Moss", "role": "Forester", "birthday": { "season": "Spring", "day": 19 }, "loves": ["SpringOnion", "WildBerry"], "dislikes": ["Coal"] },
+    { "name": "Sylvie Finch", "role": "Baker", "birthday": { "season": "Winter", "day": 7 }, "loves": ["Egg", "BerryTart"], "dislikes": ["Stone"] },
+    { "name": "Garrick Stone", "role": "Saloon Keeper", "birthday": { "season": "Fall", "day": 15 }, "loves": ["VegetableStew", "AmberCorn"], "dislikes": ["Slime"] },
+    { "name": "Nora Wren", "role": "Botanist", "birthday": { "season": "Spring", "day": 26 }, "loves": ["SunMelon", "SpringRoot"], "dislikes": ["BatWing"] }
+  ]
+}
