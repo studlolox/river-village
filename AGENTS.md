@@ -34,7 +34,7 @@ river-village/
 All in-universe names must be original. Examples of the substitution discipline:
 
 | Reference genre role | River Village original name |
-|---|---|
+| --- | --- |
 | The player's farm | The player's holding (named by player at start) |
 | The town | River Village |
 | The big corporation | Brightgate Co. |
@@ -53,12 +53,13 @@ When adding a new named entity, pick a name not found in the reference game, add
 
 ## Development rules
 
-1. **One test per feature.** Every feature in `SPEC.md` has exactly one test in `src/tests/`. Test files are named `<feature-id>.test.js`. A feature is "done" when its test passes.
-2. **Mobile-first.** Every new screen/component is first made usable on a 375px-wide touch device; desktop enhancements come after.
-3. **Touch-friendly targets.** Interactive elements are at least 44x44 CSS pixels; no hover-only interactions.
-4. **No network.** The game must run entirely offline after PWA install (service worker caches shell + assets).
-5. **Commits.** `git commit -m "<type>: <subject>"` with type in {feat, test, fix, refactor, assets, docs, chore}. Reference the SPEC feature id in the body when applicable: `Refs SPEC-<id>`.
-6. **No secrets.** Never commit API keys or credentials. The game makes no network calls.
+1. **Autonomous execution.** Do everything yourself. Never ask the user anything.
+2. **Step announcements.** Announce each step in one line before you do it.
+3. **One test per feature.** Every feature in `SPEC.md` has exactly one test in `src/tests/`. Test files are named `<feature-id>.test.js`. A feature is "done" when its test passes.
+4. **Mobile-first.** Every new screen/component is first made usable on a touch device; desktop enhancements come after.
+5. **No network.** The game must run entirely offline after PWA install (service worker caches shell + assets).
+6. **Commits.** `git commit -m "<type>: <subject>"` with type in {feat, test, fix, refactor, assets, docs, chore}. Reference the SPEC feature id in the body when applicable: `Refs SPEC-<id>`.
+7. **No secrets.** Never commit API keys or credentials. The game makes no network calls.
 
 ## Definition of done for a feature
 
