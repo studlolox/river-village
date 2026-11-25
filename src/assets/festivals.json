@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "festivals": [
+    { "name": "Spring Egg Hunt", "season": "Spring", "day": 13, "reward": "SunburstHat" },
+    { "name": "Summer Luau", "season": "Summer", "day": 11, "reward": "TideLantern" },
+    { "name": "Fall Fair", "season": "Fall", "day": 16, "reward": "HarvestTrophy" },
+    { "name": "Winter Feast", "season": "Winter", "day": 25, "reward": "StarlightCloak" }
+  ]
+}
